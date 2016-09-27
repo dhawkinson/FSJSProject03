@@ -90,7 +90,8 @@ input {
 	outline: none;
 }
 
-input:focus {
+input[type="text"]:focus,
+input[type="email"]:focus {
 	background: #fff;
 	border-color: #5e97b0;
 	transition: border-color .4s, background-color .4s;
