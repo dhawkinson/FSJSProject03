@@ -45,11 +45,77 @@
             }
         });
     }
-    //  End of Global Variables
+    function activityListener() {
+        // build registration activities and total cost
+        $('.activities :checkbox').change(function(e) {
+
+            $("#totCost").remove();   // remove for later appending of changed value
+            //  get activity, potential conflict of this checkbox
+            var activity = '';
+            var conflict = '';
+            if ( e.target.parentElement.id.indexOf("|") !=-1 ) {
+                activity = e.target.parentElement.id.split("|")[0];
+                conflict = e.target.parentElement.id.split("|")[1];
+            } else {
+                activity = e.target.parentElement.id;
+            }
+            //
+            //  Note to self: within the context of a checkbox.change function
+            //      'this.checked' seems to use the state of the checkbox to infer the event of 'checking'
+            //      'else' seems to use the state of the checkbox to infer the event of 'unchecking'
+            //      it is a subtle difference (state/event) and I wonder if there are implications
+            //      in a scenario of just testing the state without an event? (something to research)
+            //
+            console.log ("Activity "+activity+" Conflict '"+conflict+"'");
+            // this will contain a reference to the checkbox
+            console.log ("this.checked "+this.checked);
+            if (this.checked) {
+                // the checkbox is now checked - increase totalCost
+                totalCost += parseInt((e.target.parentElement.innerText).split("$")[1]);
+
+                //  with conflict, disable conflicting activity
+                if (activity == "Tue:am" || activity == "Tue:pm") {
+                    // then do stuff to each of the other check boxes
+                    $(".activities > label").each (function() {
+                        // check to see if they are registered for conflicting workshop as well
+                        if ($(this).find("input").attr("id") == (activity+"|"+conflict)) {
+                            //disable other check boxes of the same type
+                            $(this).find("input:not(:checked)").prop('disabled', 'disabled');
+                            // append some text to the unchecked boxes of the same type showing that the morning has been booked
+                            $(this).find("input:not(:checked)").parent().append('<small id="conflict"><em> '+activity+' Booked Already<em></small>');
+                        }
+                    });
+                }
+            } else {
+                // the checkbox is now no longer checked - decrease totalCost
+                totalCost -= parseInt((e.target.parentElement.innerText).split("$")[1]);
+                //  with conflict, enable conflicting activity
+                if (activity == "Tue:am" || activity == "Tue:pm") {
+                    // then do stuff to each of the other check boxes
+                    $(".activities > label").each (function() {
+                        // check to see if they registered for conflicting workshop as well
+                        if ($(this).find("input").attr("id") == (activity+"|"+conflict)) {
+                            //enable other check boxes of the same type
+                            $(this).find("input:not(:checked)").removeAttr('disabled');
+                            // remove the conflicting booking message
+                            $(this).find('#conflict').remove();
+
+                        }
+                    });
+                }
+            }
+        });
+        console.log("Bottom");
+        $('#fieldset-2').append("<div id='totCost'><label for='totalCost'>Total Registration Cost: $"+totalCost+"</label></div>");     //  reapply totalCost
+
+    }
+    //  End of functions
     //**************************************************************************
 
     //  Set focus on Name field
     $("#name").focus();
+
+    //  initialize all checkboxes as active
 
     //  identify fieldsets uniquely.
     $('fieldset').each(function(index) {
@@ -64,7 +130,7 @@
 
     //  fieldset 2 - Activities
     //  Check Activities
-    //      Main Conference - Mandatory             $200
+    //      Main Conference                         $200
     //      Workshops Optional
     //          JS Frameworks WS - Tue 9am-12pm     $100    (Conflicts w/Express)
     //          JS Libraries WS  - Tue 1pm-4pm      $100    (Conflicts w/Node.js)
@@ -73,25 +139,37 @@
     //          Build Tools WS   - Wed 9am-12pm     $100
     //          npm WS           - Wed 1pm-4pm      $100
     //  Index the labels to make it easier to access
+    //  identify potential scheduling conflicts - Tuesdays am & pm
 
-    $(".activities > label").each(function() {
+
+    $(".activities > label").each(function(index) {
         var text = $(this).text();
-        debugger;
-        switch(text) {
-            case (text.indexOf("Tuesday 9") >= 0):
-                $(this).attr("id", "tue-am");
-                break;
-            case (text.indexOf("Tuesday 1") >= 0):
-                $(this).attr("id", "tue-pm");
-                break;
-            case (text.indexOf("Wednesday 9") >= 0):
-                $(this).attr("id", "wed-am");
-                break;
-            case (text.indexOf("Wednesday 1") >= 0):
-                $(this).attr("id", "wed-pm");
-                break;
-            default:
-                $(this).attr("id", "main");
+        //
+        //  Note to self: tried to use switch but switch only compares for equality
+        //      so, switch(text)
+        //          case (text.indexOf("Tuesday 9") != -1) always evaluates to false
+        //              it is equivalent to: if ((text === (text.indexOf("Tuesday 9") != -1)) { do stuff }
+        //      Another trap: miss a break statement and the logic falls through to the next case
+        //      USE WITH CAUTION
+        //
+        if (text.indexOf("Tuesday 9") != -1) {
+            if ( index == 1 ) {
+                $(this).attr("id","Tue:am|3");
+            } else {
+                $(this).attr("id","Tue:am|1");
+            }
+        } else if (text.indexOf("Tuesday 1") != -1) {
+            if ( index == 2 ) {
+                $(this).attr("id","Tue:pm|4");
+            } else {
+                $(this).attr("id","Tue:pm|2");
+            }
+        } else if (text.indexOf("Wednesday 9") != -1) {
+            $(this).attr("id","Wed:am");
+        } else if (text.indexOf("Wednesday 1") != -1) {
+            $(this).attr("id","Wed:pm");
+        } else {
+            $(this).attr("id","Main");
         }
     });
 
@@ -114,5 +192,6 @@
 
     titleListener();
     designListener();
+    activityListener();
 
 }());
