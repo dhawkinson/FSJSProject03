@@ -9,7 +9,7 @@ This project is a great way for you to practice fundamental JavaScript skills. I
 
 <strong>2. Set focus on the first text field</strong>
 
-    When the page loads, give focus to the first text field
+    When the page loads, give focus to the first text field ( name field)
 
 <strong>3. Job Role section of the form. Reveal a text field when the "Other" option is selected from the "Job Role" drop down menu</strong>
     Make sure you add an text input field.
