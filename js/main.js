@@ -277,7 +277,7 @@
     });
 
     //  submit the form
-    debugger;
+    //debugger;
     $("#register").submit(function() {
         //debugger;
         validForm();
