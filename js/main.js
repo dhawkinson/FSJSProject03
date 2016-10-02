@@ -121,6 +121,7 @@
 
             nCheck += nDigit;
             bEven = !bEven;
+
         }
 
         return (nCheck % 10) === 0;
@@ -278,19 +279,19 @@
 
     //  submit the form
     //debugger;
-    $("#register").submit(function() {
-        //debugger;
-        validForm();
-        if ( !validForm() ) {
+    $("form").submit(function() {
+
+        if ( !validForm() ) {               //  this is the 'failed' block
             $("form").append('<p class="err" style="color: red;"><small>Please correct entry error(s)!</small></p>');
-            $(errMark).focus();
-            test=true;                      //  set to true for recheck of this form , else run the risk of staying forever false
-            event.preventDefault();         //  ensures that submit doesn't take place
-        } else {
-            $('.err').remove();
-            test=true;                      //  set to true for next form check, to assure we don't stay forever false
-            $("#name").focus;
+            $(errMark).focus();       //  set focus on first error field
+            test=true;                //  set to true for recheck of this form , else run the risk of staying forever false
+            event.preventDefault();   //  ensures that submit doesn't take place
+        } else {                            //  this is the 'true' block
+            $ ('.err').remove ();       //  remove previous error messages
+            test = true;                //  set to true for next form check, to assure we don't stay forever false
+            $ ("#name").focus();        //  set focus on name of next form
         }
+
     });
 
     //  End of event listeners
