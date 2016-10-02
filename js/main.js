@@ -311,8 +311,7 @@
     });
 
     //  fieldset 0 - basic info
-    //  get 'other' information and hide it until needed
-    $('#fieldset-0').append("<input type='text' id='other-title' placeholder='Your Title...' name='otherTitle'>");
+    //  take 'other' information and hide it until needed
     $('#other-title').hide();
 
     //  fieldset 1 - T shirts
