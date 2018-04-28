@@ -1,4 +1,5 @@
 # TH03-Conference-Registration
+Full Stack Java Script Project 03 - Treehouse TechDegree
 
 In this project, you'll create an interactive registration form for "FullStack Conf". Using the supplied HTML and CSS files, you'll use JavaScript to enhance the form by adding interactivity. You can use plain JavaScript or jQuery –– it's up to you!
 
